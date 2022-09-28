@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estudantes</title>
+
+</head>
+
+<body>
+
+
+
+    <p>Lista de estudantes cadastrados: </p>
+    <ul>
+        <li th:each="estudante : ${estudantes}">
+            <span
+                th:text="${estudante.primeiroNome} +' '+ ${estudante.ultimoNome} + ' - Curso:  ' + ${estudante.curso} " />
+            <a th:text="Detalhes" th:href="@{/estudante/detalhesEstudante(id=${estudante.id})}" ></a>
+            <a th:text=" ' - Deletar' " th:href="@{/estudante/deletarEstudante(id=${estudante.id})}" ></a>
+            <br>
+        </li>
+    </ul>
+    <br><br>
+    <p>Tabela com as infos</p>
+    <table>
+        <thead>
+          <tr>
+            <th th:text="Nome"></th>
+            <th th:text="Curso"></th>
+            <th th:text="Linguagem"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="estudante: ${estudantes}">
+            <td th:text="${estudante.primeiroNome}"></td>
+            <td th:text="${estudante.curso}"></td>
+            <td th:text="${estudante.linguagem}"></td>
+          </tr>
+        </tbody>
+      </table>
+    <br><br>
+    <p>Listar estudantes por curso</p>
+    <a th:text="BTI" th:href="@{/estudante/getListaEstudantesPorCurso(curso='BTI')}" ></a>
+    <br>
+    <a th:text="EngSoft" th:href="@{/estudante/getListaEstudantesPorCurso(curso='EngSoft')}" ></a>
+    <br>
+    <a th:text="EngComp" th:href="@{/estudante/getListaEstudantesPorCurso(curso='EngComp')}" ></a>
+    <br>
+
+    <p>Listar estudantes por Linguagem</p>
+    <a th:text="C" th:href="@{/estudante/getListaEstudantesPorLinguagem(lang='C')}" ></a>
+
+    <br>
+    <a th:text="Java" th:href="@{/estudante/getListaEstudantesPorLinguagem(lang='Java')}" ></a>
+    <br>
+    <a th:text="Python" th:href="@{/estudante/getListaEstudantesPorLinguagem(lang='Python')}" ></a>
+    <br>
+    <a th:text="JavaScript" th:href="@{/estudante/getListaEstudantesPorLinguagem(lang='JavaScript')}" ></a>
+    <br>
+    <br>
+    <a href="showForm">Formulário de estudantes</a>
+    <br>
+
+</body>
+
+</html>
