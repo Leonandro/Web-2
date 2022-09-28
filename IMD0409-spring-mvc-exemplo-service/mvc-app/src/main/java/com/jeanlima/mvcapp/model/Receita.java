@@ -96,5 +96,7 @@ public class Receita extends AbstractModel<Integer> {
     public void setUsuarioList(List<Usuario> usuarioList) {
         this.usuarioList = usuarioList;
     }
+
+
 }
 
