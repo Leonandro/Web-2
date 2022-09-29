@@ -1,20 +1,21 @@
 package com.jeanlima.mvcapp.controller;
 
+import com.jeanlima.mvcapp.model.Chef;
 import com.jeanlima.mvcapp.model.Receita;
 import com.jeanlima.mvcapp.model.Usuario;
+import com.jeanlima.mvcapp.model.util.receitaChefDto;
+import com.jeanlima.mvcapp.model.util.receitaUserDto;
+import com.jeanlima.mvcapp.service.ChefService;
 import com.jeanlima.mvcapp.service.ReceitaService;
 import com.jeanlima.mvcapp.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
-
-
+import java.util.Optional;
 
 
 @Controller
@@ -24,6 +25,11 @@ public class ReceitasController { //extends AbstractController<Usuario, Integer>
     @Autowired
     ReceitaService service;
 
+    @Autowired
+    UsuarioService usuarioService;
+
+    @Autowired
+    ChefService chefService;
 
     @GetMapping
     public String findAll(Model model) {
@@ -34,11 +40,71 @@ public class ReceitasController { //extends AbstractController<Usuario, Integer>
 
     }
 
+    @RequestMapping("/usuario/{id}")
+    public String findAll(@PathVariable("id") String id, Model model) {
+        Usuario usuario = this.usuarioService.getById(Integer.parseInt(id));
+        List<Receita> receitasQueOUsuarioCurtiu =  Optional.ofNullable( usuario.getReceitasFavoritas() ).orElseGet(() -> new ArrayList<>());
+        model.addAttribute("entidades", receitasQueOUsuarioCurtiu);
+        return "receita/listReceita";
+
+    }
+
+    @RequestMapping("/chef/{id}")
+    public String findAllChefs(@PathVariable("id") String id, Model model) {
+        Chef chef = this.chefService.getById(Integer.parseInt(id));
+        List<Receita> receitasDoChef =  Optional.ofNullable( chef.getReceitas() ).orElseGet(() -> new ArrayList<>());
+        model.addAttribute("entidades", receitasDoChef);
+        return "receita/listReceita";
+
+    }
+
     @GetMapping("/home")
     public String finById(@RequestParam("id") String id,Model model) {
 
         Receita receita = this.service.getById(Integer.parseInt(id));
         model.addAttribute("receita", receita);
+        model.addAttribute("dto", new receitaUserDto());
+        model.addAttribute("dtoChef", new receitaChefDto());
+        return "receita/receitaHome";
+
+    }
+
+    @RequestMapping("/curtir/{id}")
+    public String curtirReceita(@PathVariable(value="id") String id, @ModelAttribute("dto") receitaUserDto dto, Model model) {
+        System.out.println("DTO " + dto.getIdUser());
+        Receita receita = this.service.getById(Integer.parseInt(id));
+        Usuario user = this.usuarioService.getById(dto.getIdUser());
+
+        List<Usuario> usuariosQueCurtiramAReceita = Optional.ofNullable( receita.getUsuarioList() ).orElseGet( () -> new ArrayList<>());
+        List<Receita> receitasQueOUsuarioCurtiu =  Optional.ofNullable( user.getReceitasFavoritas() ).orElseGet(() -> new ArrayList<>());
+
+        usuariosQueCurtiramAReceita.add(user);
+        receitasQueOUsuarioCurtiu.add(receita);
+
+        user.setReceitasFavoritas(receitasQueOUsuarioCurtiu);
+        receita.setUsuarioList(usuariosQueCurtiramAReceita);
+        this.usuarioService.save(user);
+        this.service.save(receita);
+
+        model.addAttribute("receita", receita);
+        model.addAttribute("dto", new receitaUserDto());
+        model.addAttribute("dtoChef", new receitaChefDto());
+        return "receita/receitaHome";
+
+    }
+
+    @RequestMapping("/assinar/{id}")
+    public String assinarReceita(@PathVariable(value="id") String id, @ModelAttribute("dto") receitaChefDto dto, Model model) {
+        System.out.println("DTO " + dto.getIdChef());
+        Receita receita = this.service.getById(Integer.parseInt(id));
+        Chef chef = this.chefService.getById(dto.getIdChef());
+
+        receita.setChef(chef);
+        this.service.save(receita);
+
+        model.addAttribute("receita", receita);
+        model.addAttribute("dto", new receitaUserDto());
+        model.addAttribute("dtoChef", new receitaChefDto());
         return "receita/receitaHome";
 
     }

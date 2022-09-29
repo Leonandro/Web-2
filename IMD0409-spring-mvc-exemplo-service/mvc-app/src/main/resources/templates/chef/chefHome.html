@@ -26,19 +26,13 @@
     </div>
 </nav>
 <br/>
-<h1><p th:text="'Olá' + ' ' + ${usuario.nome}" /></h1>
+<h1><p th:text="'Olá' + ' ' + ${chef.alcunha}" /></h1>
 <br/>
-<h5>Idade</h5>
-<p class="fs-6" th:text="${usuario.idade}"></p>
-<br/>
-<h5>Email</h5>
-<p class="fs-6" th:text="${usuario.email}"></p>
-
-<a class="btn btn-outline-success"  th:text="'Ver receitas curtidas'" th:href="@{/receita/usuario/} + ${usuario.id}"></a>
+<a class="btn btn-outline-success"  th:text="'Ver receitas'" th:href="@{/receita/chef/} + ${chef.id}"></a>
 <br/>
 <br/>
-<a class="btn btn-outline-danger"  th:text="'Deletar Conta'" th:href="@{/usuario/delete(id=${usuario.id})}"></a>
-<a class="btn btn-outline-warning"  th:text="'Atualizar Conta'" th:href="@{/usuario/formUpdate(id=${usuario.id})}"></a>
+<a class="btn btn-outline-danger"  th:text="'Deletar Conta'" th:href="@{/chef/delete(id=${chef.id})}"></a>
+<a class="btn btn-outline-warning"  th:text="'Atualizar Conta'" th:href="@{/chef/formUpdate(id=${chef.id})}"></a>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8" crossorigin="anonymous"></script>
 </body>
 </html>

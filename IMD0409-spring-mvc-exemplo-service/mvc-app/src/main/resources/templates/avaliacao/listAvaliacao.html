@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Usuários</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+</head>
+
+<body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8" crossorigin="anonymous"></script>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <a class="navbar-brand" href="#">SGR</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+        <a class="nav-link" href="/">Home <span class="sr-only"></span></a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link disabled" href="#">Leonandro Gurgel</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+<br/>
+<h3 class="text-center">Lista de avaliações cadastrados</h3>
+<br/>
+<table class="table table-striped">
+  <thead>
+  <tr>
+    <th class="fs-4" scope="col">Usuário</th>
+    <th class="fs-4" scope="col">Receita</th>
+    <th class="fs-4" scope="col">Detalhes</th>
+  </tr>
+  </thead>
+  <trbody th:each="avaliacao : ${entidades}">
+    <tr>
+      <td class="fs-5" th:text="${avaliacao.usuario.nome}"></td>
+      <td class="fs-5" th:text="${avaliacao.receita.nome}"></td>
+      <td><a class="btn btn-primary" th:text="'Ver'" th:href="@{/avaliacao/home(id=${avaliacao.id})}" ></a></td>
+    </tr>
+  </trbody>
+</table>
+
+<a class="btn btn-primary" th:text="'Adicionar Avaliação'" th:href="@{/avaliacao/form}"  ></a>
+
+</body>
+
+</html>
