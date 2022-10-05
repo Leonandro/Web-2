@@ -72,16 +72,13 @@ public class ChefController { //extends AbstractController<Usuario, Integer> {
     }
 
     @RequestMapping("/atualizar")
-    public String updateUser(@ModelAttribute("chefAntigo") Chef chef,  Model model){
-//        if(usuario.getNome() != null && usuario.getEmail() != null){
-//            Usuario usuarioASerModificado = usuarioService.getById(usuario.getId());
-//            usuarioASerModificado.setNome( usuario.getNome() );
-//            usuarioASerModificado.setEmail( usuario.getEmail() );
-//            usuarioASerModificado.setIdade( usuario.getIdade() );
-//            usuarioASerModificado.setChef( usuario.getChef() );
-//            usuarioASerModificado.setAvaliacoes( usuario.getAvaliacoes() );
-//            usuarioService.save(usuarioASerModificado);
-//        }
+    public String updateUser(@ModelAttribute("chefAntigo") chefFormDto chef,  Model model){
+        if(chef.getAlcunha() != null && chef.getRestaurante() != null){
+            Chef chefASerModificado = service.getById(chef.getId());
+            chefASerModificado.setAlcunha( chef.getAlcunha() );
+            chefASerModificado.setRestaurante(chef.getRestaurante() );
+            service.save(chefASerModificado);
+        }
         List<Chef> entidades = this.service.findAll();
         model.addAttribute("entidades", entidades);
         return "chef/listChef";

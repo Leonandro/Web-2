@@ -28,6 +28,10 @@
 <br/>
 <h1><p th:text="'Olá' + ' ' + ${chef.alcunha}" /></h1>
 <br/>
+<br/>
+<h5>Restaurante</h5>
+<p class="fs-6" th:text="${chef.Restaurante}"></p>
+
 <a class="btn btn-outline-success"  th:text="'Ver receitas'" th:href="@{/receita/chef/} + ${chef.id}"></a>
 <br/>
 <br/>
