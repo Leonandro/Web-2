@@ -83,15 +83,22 @@ public class PublicacaoService {
         novaPublicacao.setUnidadeDeDoacao(unidadeDeDoacao.get());
 
         Publicacao publicacaoSalva = repository.save(novaPublicacao);
-        List<Publicacao> publicacao_usuario = new ArrayList<Publicacao>();
+//        List<Publicacao> publicacao_usuario = usuario.get().getPublicacao();
+        List<Publicacao> publicacao_usuario = new ArrayList<>();
+
 
         publicacao_unidade.add(publicacaoSalva);
         publicacao_usuario.add(publicacaoSalva);
         unidadeDeDoacao.get().setPublicacao(publicacao_unidade);
+
+        System.out.println("LISTA DE PUBLICAÇÕES " + publicacao_usuario.size());
+        List<Publicacao> a = usuario.get().getPublicacao();
+        a.clear();
+        usuario.get().setPublicacao(a);
         usuario.get().setPublicacao(publicacao_usuario);
 
-        unidadeDeDoacaoRepository.save(unidadeDeDoacao.get());
-        usuarioRepository.save(usuario.get());
+//        unidadeDeDoacaoRepository.save(unidadeDeDoacao.get());
+//        usuarioRepository.save(usuario.get());
 
         return publicacaoSalva;
     }

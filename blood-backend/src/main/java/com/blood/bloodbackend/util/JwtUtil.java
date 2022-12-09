@@ -44,7 +44,7 @@ public class JwtUtil {
     }
 
     private String createToken (Map<String, Object> claims, String subject) {
-        System.out.println("CRIANDO O TOKEN");
+        //System.out.println("CRIANDO O TOKEN");
         System.out.println(claims.get("roles").toString());
         return Jwts.builder()
                 .setClaims(claims)

@@ -5,11 +5,13 @@ import com.blood.bloodbackend.model.DTO.UsuarioIncomingDTO;
 import com.blood.bloodbackend.model.PapelUsuario;
 import com.blood.bloodbackend.model.Usuario;
 import com.blood.bloodbackend.repository.PapelUsuarioRepository;
+import com.blood.bloodbackend.repository.PublicacaoRepository;
 import com.blood.bloodbackend.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.ArrayList;
@@ -25,6 +27,9 @@ public class UsuarioService {
 
     @Autowired
     PapelUsuarioRepository papelUsuarioRepository;
+
+    @Autowired
+    PublicacaoRepository publicacaoRepository;
 
     public  ResponseEntity<?> getUsuarios () {
 
@@ -57,11 +62,15 @@ public class UsuarioService {
         return ResponseEntity.ok(usuario);
     }
 
+    @Transactional
     public ResponseEntity<?> deleteUsuario (long id) {
         Optional <Usuario> usuario = usuarioRepository.findById(id);
         if(!usuario.isPresent()){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponseDTO("Não foi possível identificar o usuário com o id " + id + " fornecido"));
         }
+        System.out.println("DELETANDO PAE");
+        papelUsuarioRepository.deleteAllByUserId(id);
+        publicacaoRepository.deleteAllByUserId(id);
         usuarioRepository.deleteById(id);
         return ResponseEntity.ok(usuario.get());
     }

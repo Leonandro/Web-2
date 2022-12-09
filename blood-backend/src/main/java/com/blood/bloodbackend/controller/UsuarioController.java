@@ -5,6 +5,7 @@ import com.blood.bloodbackend.model.DTO.UsuarioIncomingDTO;
 import com.blood.bloodbackend.model.Usuario;
 import com.blood.bloodbackend.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,7 +36,10 @@ public class UsuarioController {
     }
 
     @PostMapping
-    public ResponseEntity<?> cadastrarUsuario (@RequestBody UsuarioIncomingDTO usuario) {
+    public ResponseEntity<?> cadastrarUsuario (@RequestBody UsuarioIncomingDTO usuario, @RequestHeader(value = "ClientID", required = false) String clientId) {
+
+        if(clientId == null || !clientId.equals("bloodapp_98")) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+
         return usuarioService.cadastrarUsuario(usuario);
     }
 
@@ -45,9 +49,11 @@ public class UsuarioController {
     }
 
 
-    @DeleteMapping(path = "/{id}")
-    public ResponseEntity<?> deletarUsuario (@PathVariable("id") long id) {
-        return  usuarioService.deleteUsuario(id);
-    }
+//    @DeleteMapping(path = "/{id}")
+//    public ResponseEntity<?> deletarUsuario (@PathVariable("id") long id) {
+//        System.out.println("Chegou no controler");
+//
+//        return  usuarioService.deleteUsuario(id);
+//    }
 
 }

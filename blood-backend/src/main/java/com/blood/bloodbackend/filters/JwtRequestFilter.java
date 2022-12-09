@@ -36,32 +36,37 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         String username = null;
         String jwt = null;
 
-        if(authorizationHeader != null && authorizationHeader.startsWith("BLOOD ")){
-            jwt = authorizationHeader.substring(6);
-            username = jwtUtil.extractUsername(jwt);
-        }
+        System.out.println("REQUEST " + request.getMethod() + " " + request.getRequestURI() + " - " + request.getHeader("ClientID"));
+        if(request.getRemoteHost().equals("127.0.0.1") && request.getHeader("ClientID") != null && request.getHeader("ClientID").equals("bloodapp_98")) {
 
-        if(username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = this.myUserDetailService.loadUserByUsername(username);
+            if (authorizationHeader != null && authorizationHeader.startsWith("BLOOD ")) {
+                jwt = authorizationHeader.substring(6);
+                username = jwtUtil.extractUsername(jwt);
+            }
 
-            if(jwtUtil.validateToken(jwt, userDetails) && this.urlAcessChecker(request.getMethod(), request.getRequestURI(), userDetails.getAuthorities())) {
-                UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
-                        userDetails, null, userDetails.getAuthorities()
-                );
+            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                UserDetails userDetails = this.myUserDetailService.loadUserByUsername(username);
 
-                usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request) );
-                SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
-            } else  {
+                if (jwtUtil.validateToken(jwt, userDetails) && this.urlAcessChecker(request.getMethod(), request.getRequestURI(), userDetails.getAuthorities())) {
+                    UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
+                            userDetails, null, userDetails.getAuthorities()
+                    );
 
-                if(! this.urlAcessChecker(request.getMethod(), request.getRequestURI(), userDetails.getAuthorities())){
-                    response.setStatus(401);
+                    usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+                } else {
 
-                    //Header sinalizando que o usuário não tem a permissão mínima necessária para acessar esse endpoint
-                    response.setHeader("reason", "User-Dont-Have-Min-Role");
+                    if (!this.urlAcessChecker(request.getMethod(), request.getRequestURI(), userDetails.getAuthorities())) {
+                        response.setStatus(401);
+
+                        //Header sinalizando que o usuário não tem a permissão mínima necessária para acessar esse endpoint
+                        response.setHeader("reason", "User-Dont-Have-Min-Role");
+                    }
                 }
             }
+        } else {
+            response.setHeader("reason", "Invalid origin");
         }
-
         filterChain.doFilter(request, response);
 
     }
@@ -72,6 +77,11 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         if(method.equals("GET") && url.startsWith("/usuario/") && url.split("/").length > 2 && isNumeric(url.split("/")[2])) {
                 return papeis.stream().filter(x -> x.getAuthority().equals("ADMINISTRADOR")).count() > 0;
         }
+
+        if( method.equals("DELETE") && url.startsWith("/usuario")) {
+            return papeis.stream().filter(x -> (x.getAuthority().equals("ADMINISTRADOR") || x.getAuthority().equals("EDITOR"))).count() > 0;
+        }
+
 
         //POST/DELETE  /unidadedoacao -> ADM
         if((method.equals("POST") || method.equals("DELETE") )&& url.startsWith("/unidadedoacao")) {

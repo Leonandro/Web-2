@@ -46,7 +46,7 @@ public class Usuario implements UserDetails {
     private Date dataNascimento;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "usuario")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuario")
     private List<Publicacao> publicacao;
 
     public String getNome() {
